@@ -45,6 +45,7 @@ typedef enum
 {
   RATE    = 0,
   ANGLE   = 1,
+  DIRECT  = 2,
 } RPYType;
 
 /**

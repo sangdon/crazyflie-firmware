@@ -316,6 +316,18 @@ static void stabilizerTask(void* param)
 
       controllerGetActuatorOutput(&actuatorRoll, &actuatorPitch, &actuatorYaw);
 
+      // direct command mode
+      if (rollType == DIRECT) {
+	  actuatorRoll = eulerRollDesired;
+      }
+      if (pitchType == DIRECT) {
+	  actuatorPitch = eulerPitchDesired;
+      }
+      if (yawType == DIRECT) {
+	  actuatorYaw = eulerYawDesired;
+      }
+
+
       if (!altHold || !imuHasBarometer())
       {
         // Use thrust from controller if not in altitude hold mode
@@ -635,6 +647,12 @@ static float deadband(float value, const float threshold)
   return value;
 }
 
+LOG_GROUP_START(ctrltarget)
+LOG_ADD(LOG_FLOAT, roll, &eulerRollDesired)
+LOG_ADD(LOG_FLOAT, pitch, &eulerPitchDesired)
+LOG_ADD(LOG_FLOAT, yaw, &eulerYawDesired)
+LOG_GROUP_STOP(ctrltarget)
+
 LOG_GROUP_START(stabilizer)
 LOG_ADD(LOG_FLOAT, roll, &eulerRollActual)
 LOG_ADD(LOG_FLOAT, pitch, &eulerPitchActual)
@@ -668,6 +686,14 @@ LOG_ADD(LOG_INT32, m1, &motorPowerM1)
 LOG_ADD(LOG_INT32, m2, &motorPowerM2)
 LOG_ADD(LOG_INT32, m3, &motorPowerM3)
 LOG_GROUP_STOP(motor)
+
+LOG_GROUP_START(trpy)
+LOG_ADD(LOG_UINT16, t, &actuatorThrust)
+LOG_ADD(LOG_INT16, r, &actuatorRoll)
+LOG_ADD(LOG_INT16, p, &actuatorPitch)
+LOG_ADD(LOG_INT16, y, &actuatorYaw)
+LOG_GROUP_STOP(trpy)
+
 
 // LOG altitude hold PID controller states
 LOG_GROUP_START(vpid)
